@@ -17,12 +17,14 @@ class Pixel {
   }
   
   void display() {
+    noStroke();
     fill(_color);
+    rectMode(CENTER);
     rect(loc.x, loc.y, size, size);
   }
   
   void move() {
-    int direction = int(random(10));
+    int direction = int(random(20));
     if (avoid == null) {
       switch (direction) {
         case 1:
@@ -90,13 +92,24 @@ class Pixel {
   }
   
   void birth() {
-    noStroke();
     vocab = new ArrayList<String>();
     loc = new PVector(random(width), random(height));
-    _color = color(random(255), random(255), random(255));
+    dest = new PVector(random(width), random(height));
+    colorOrient();
     basicVocab();
     speed = 4;
     size = 4;
+  }
+  
+  void colorOrient() {
+    red = random(255);
+    green = random(255);
+    blue = random(255);
+    _color = color(red, green, blue);
+    // desired color state
+    desR = random(255);
+    desG = random(255);
+    desB = random(255);
   }
   
   void basicVocab() {
