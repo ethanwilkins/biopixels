@@ -25,7 +25,7 @@ class Pixel {
   
   void move() {
     int direction = int(random(20));
-    if (avoid == null) {
+    if (avoid == null || avoid == "") {
       switch (direction) {
         case 1:
             loc.x += speed;
@@ -40,6 +40,8 @@ class Pixel {
             loc.y -= speed;
           break;
       }
+    } else {
+      avoid = "";
     }
   }
   
@@ -53,7 +55,7 @@ class Pixel {
     if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*4) {
       if (pixel.speech == "u" || pixel.speech == "d" ||
         pixel.speech == "l" || pixel.speech == "r") {
-        pixel._color = color(255, 255, 255);
+        pixel._color = _color;
       }
     } 
   }
@@ -98,7 +100,7 @@ class Pixel {
     colorOrient();
     basicVocab();
     speed = 4;
-    size = 4;
+    size = 2;
   }
   
   void colorOrient() {
@@ -107,9 +109,9 @@ class Pixel {
     blue = random(255);
     _color = color(red, green, blue);
     // desired color state
-    desR = random(255);
-    desG = random(255);
-    desB = random(255);
+    desR = int(random(255));
+    desG = int(random(255));
+    desB = int(random(255));
   }
   
   void basicVocab() {

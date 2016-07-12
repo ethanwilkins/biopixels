@@ -4,7 +4,7 @@
 World world;
 
 void setup() {
-  size(displayWidth, displayHeight);
+  size(250, 250);
   world = new World();
 }
 
