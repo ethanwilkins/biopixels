@@ -25,24 +25,29 @@ class Pixel {
   
   void move() {
     int direction = int(random(20));
-    if (avoid == null || avoid == "") {
-      switch (direction) {
-        case 1:
+    switch (direction) {
+      case 1: // left
+          if (avoid != "l") {
             loc.x += speed;
-          break;
-        case 2:
+          }
+        break;
+      case 2: // right
+          if (avoid != "r") {
             loc.x -= speed;
-          break;
-        case 3:
+          }
+        break;
+      case 3: // down
+          if (avoid != "d") {
             loc.y += speed;
-          break;
-        case 4:
+          }
+        break;
+      case 4: // up
+          if (avoid != "u") {
             loc.y -= speed;
-          break;
-      }
-    } else {
-      avoid = "";
+          }
+        break;
     }
+    avoid = "";
   }
   
   void speak() {
@@ -99,14 +104,14 @@ class Pixel {
     dest = new PVector(random(width), random(height));
     colorOrient();
     basicVocab();
-    speed = 4;
-    size = 2;
+    speed = 2;
+    size = 1;
   }
   
   void colorOrient() {
-    red = random(255);
+    red = 0; //random(255);
     green = random(255);
-    blue = random(255);
+    blue = 0; //random(255);
     _color = color(red, green, blue);
     // desired color state
     desR = int(random(255));
