@@ -1,6 +1,38 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class biopixels extends PApplet {
+
+// language based on rgb values, r g and b used to communicate colors desired
+// u d l r used to communicate directions, evolves based on this
+
+// ability to press on screen and change all pixels to rainbow in press spot
+
+World world;
+
+public void setup() {
+  
+  background(0);
+  world = new World();
+}
+
+public void draw() {
+  world.display();
+}
 class Pixel {
   PVector loc, dest;
-  color _color;
+  int _color;
   int desR, desG, desB;
   float size, speed, red, green, blue;
   ArrayList<String> vocab;
@@ -10,35 +42,21 @@ class Pixel {
     birth();
   }
   
-  void birth() {
-    vocab = new ArrayList<String>();
-    loc = new PVector(random(width), random(height));
-    dest = new PVector(random(width), random(height));
-    colorOrient();
-    basicVocab();
-    speed = 2;
-    size = 1;
-  }
-  
-  void update() {
+  public void update() {
     context();
     speak();
     move();
   }
   
-  void display() {
-    if (mousePressed && dist(mouseX, mouseY, loc.x,
-      loc.y) < world.pressDiameter) {
-      _color = color(random(255), random(255), random(255));
-    }
+  public void display() {
     noStroke();
     fill(_color);
     rectMode(CENTER);
     rect(loc.x, loc.y, size, size);
   }
   
-  void move() {
-    int direction = int(random(20));
+  public void move() {
+    int direction = PApplet.parseInt(random(20));
     switch (direction) {
       case 1: // left
           if (avoid != "l") {
@@ -64,23 +82,22 @@ class Pixel {
     avoid = "";
   }
   
-  void speak() {
+  public void speak() {
     if (avoid != null) {
       speech = avoid;
     }
   }
   
-  void listen(Pixel pixel) {
+  public void listen(Pixel pixel) {
     if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*4) {
       if (pixel.speech == "u" || pixel.speech == "d" ||
         pixel.speech == "l" || pixel.speech == "r") {
-        pixel._color = color(random(pixel.red),
-          random(pixel.green), random(pixel.blue));
+        pixel._color = _color;
       }
     } 
   }
   
-  void avoid(Pixel pixel) {
+  public void avoid(Pixel pixel) {
     float horizontal = abs(loc.x - pixel.loc.x), 
       vertical = abs(loc.y - pixel.loc.y),
       diameter = size*2;
@@ -106,7 +123,7 @@ class Pixel {
     }
   }
   
-  void avoidEdges() {
+  public void avoidEdges() {
     // avoids egdes of screen
     if (loc.x >= width) {
       avoid = "l";
@@ -120,7 +137,7 @@ class Pixel {
     }
   }
   
-  void context() {
+  public void context() {
     for (int i=0; i < world._pixels.size(); i++) {
       Pixel pixel = world._pixels.get(i);
       if (pixel != this) {
@@ -130,21 +147,65 @@ class Pixel {
     }
   }
   
-  void colorOrient() {
+  public void birth() {
+    vocab = new ArrayList<String>();
+    loc = new PVector(random(width), random(height));
+    dest = new PVector(random(width), random(height));
+    colorOrient();
+    basicVocab();
+    speed = 2;
+    size = 1;
+  }
+  
+  public void colorOrient() {
     red = 0; //random(255);
     green = random(255);
     blue = 0; //random(255);
     _color = color(red, green, blue);
     // desired color state
-    desR = int(random(255));
-    desG = int(random(255));
-    desB = int(random(255));
+    desR = PApplet.parseInt(random(255));
+    desG = PApplet.parseInt(random(255));
+    desB = PApplet.parseInt(random(255));
   }
   
-  void basicVocab() {
+  public void basicVocab() {
     String[] basic = {"r", "g", "b", "u", "d", "l", "r"};
     for (int i=0; i < basic.length; i++) {
       vocab.add(basic[i]);
+    }
+  }
+}
+class World {
+  ArrayList<Pixel> _pixels;
+  int population;
+  
+  World () {
+    genesis();
+  }
+  
+  public void display() {
+    for (int i=0; i < _pixels.size(); i++) {
+      Pixel pixel = _pixels.get(i);
+      pixel.update();
+      pixel.display();
+    }
+  }
+  
+  public void genesis() {
+    population = 1000;
+    _pixels = new ArrayList<Pixel>();
+    for (int i=0; i < population; i++) {
+      _pixels.add(new Pixel());
+    }
+  }
+}
+  public void settings() {  size(500, 500); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "biopixels" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
     }
   }
 }

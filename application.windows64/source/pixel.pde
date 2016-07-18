@@ -10,16 +10,6 @@ class Pixel {
     birth();
   }
   
-  void birth() {
-    vocab = new ArrayList<String>();
-    loc = new PVector(random(width), random(height));
-    dest = new PVector(random(width), random(height));
-    colorOrient();
-    basicVocab();
-    speed = 2;
-    size = 1;
-  }
-  
   void update() {
     context();
     speak();
@@ -27,10 +17,6 @@ class Pixel {
   }
   
   void display() {
-    if (mousePressed && dist(mouseX, mouseY, loc.x,
-      loc.y) < world.pressDiameter) {
-      _color = color(random(255), random(255), random(255));
-    }
     noStroke();
     fill(_color);
     rectMode(CENTER);
@@ -74,8 +60,7 @@ class Pixel {
     if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*4) {
       if (pixel.speech == "u" || pixel.speech == "d" ||
         pixel.speech == "l" || pixel.speech == "r") {
-        pixel._color = color(random(pixel.red),
-          random(pixel.green), random(pixel.blue));
+        pixel._color = _color;
       }
     } 
   }
@@ -128,6 +113,16 @@ class Pixel {
         listen(pixel);
       }
     }
+  }
+  
+  void birth() {
+    vocab = new ArrayList<String>();
+    loc = new PVector(random(width), random(height));
+    dest = new PVector(random(width), random(height));
+    colorOrient();
+    basicVocab();
+    speed = 2;
+    size = 1;
   }
   
   void colorOrient() {
