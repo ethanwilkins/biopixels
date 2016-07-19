@@ -45,7 +45,7 @@ class World {
           int childIndex = pixel.childIndexes.get(x);
           Pixel child = _pixels.get(childIndex);
           toCiv = dist(pixel.loc.x, pixel.loc.y, child.loc.x, child.loc.y);
-          civ += toCiv+((pixel.red+pixel.blue)/2)-pixel.green;
+          civ += toCiv+(pixel.red+pixel.blue)-pixel.green;
         }
       } else if (pixel.red+pixel.blue == 0) {
         // tame wild pixels bring vitality 
