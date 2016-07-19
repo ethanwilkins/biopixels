@@ -110,11 +110,11 @@ class Pixel {
   }
   
   void makeAsChild(Pixel pixel, int i) {
-    if (((withChild || random(25) <= 5)
+    if (((withChild || random(5) <= 1)
       || (withChild && pixel.withChild))
         && (red > 0 || blue > 0)
         && (pixel.red > 0 || pixel.blue > 0)
-        && (green <= 1 /*&& pixel.green <= 1*/)) {
+        && (green <= 1 && pixel.green <= 1)) {
       // steals any of new childs connections
       for (int x=0; x < pixel.childIndexes.size(); x++) {
         int childIndex = pixel.childIndexes.get(x);
