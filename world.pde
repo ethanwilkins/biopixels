@@ -1,6 +1,6 @@
 class World {
   ArrayList<Pixel> _pixels;
-  int population;
+  int population = 750;
   int civilization;
   
   // for press interaction
@@ -51,7 +51,6 @@ class World {
   }
   
   void genesis() {
-    population = 1000;
     civilization = 0;
     _pixels = new ArrayList<Pixel>();
     for (int i=0; i < population; i++) {

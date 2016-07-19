@@ -1,8 +1,10 @@
 class Pixel {
   PVector loc, dest;
+  int directOctal;
   color _color;
   int desR, desG, desB;
-  float size, speed, red, green, blue;
+  float size, speed, xSpeed, ySpeed,
+    red, green, blue;
   ArrayList<String> vocab;
   String avoid, speech;
   boolean withChild;
@@ -20,7 +22,8 @@ class Pixel {
     withChild = false;
     colorOrient();
     basicVocab();
-    speed = 2;
+    xSpeed = 1;
+    ySpeed = xSpeed;
     size = 1;
   }
   
@@ -49,51 +52,38 @@ class Pixel {
   }
   
   void move() {
-    int direction = int(random(16));
-    switch (direction) {
+    //int direction = int(random(16));
+    switch (directOctal) {
+      case 0: // applies bounce
+        loc.x += xSpeed;
+        loc.y += ySpeed;
       case 1: // right
-          if (avoid != "r") {
-            loc.x += speed;
-          }
+        loc.x += speed;
         break;
       case 2: // down right
-        if (avoid != "d" || avoid != "r") {
-          loc.x += speed;
-          loc.y += speed;
-        }
+        loc.x += speed;
+        loc.y += speed;
         break;
       case 3: // down
-          if (avoid != "d") {
-            loc.y += speed;
-          }
+        loc.y += speed;
         break;
       case 4: // down left
-        if (avoid != "d" || avoid != "l") {
-          loc.x -= speed;
-          loc.y += speed;
-        }
+        loc.x -= speed;
+        loc.y += speed;
         break;
       case 5: // left
-          if (avoid != "l") {
-            loc.x -= speed;
-          }
+        loc.x -= speed;
         break;
       case 6: // top left
-        if (avoid != "u" || avoid != "l") {
-          loc.x -= speed;
-          loc.y -= speed;
-        }
+        loc.x -= speed;
+        loc.y -= speed;
         break;
       case 7: // up
-          if (avoid != "u") {
-            loc.y -= speed;
-          }
+        loc.y -= speed;
         break;
       case 8: // top right
-        if (avoid != "u" || avoid != "r") {
-          loc.x += speed;
-          loc.y -= speed;
-        }
+        loc.x += speed;
+        loc.y -= speed;
         break;
     }
     avoid = "";
@@ -116,22 +106,26 @@ class Pixel {
           pixel._color = color(red, green, blue);
         }
         // determines whether to make as child
-        if (((withChild || random(20) <= 1)
-          || (withChild && pixel.withChild))
-            && (red > 0 || blue > 0)
-            && (pixel.red > 0 || pixel.blue > 0)
-            && (green <= 1 && pixel.green <= 1)) {
-          // steals any of new childs connections
-          for (int x=0; x < pixel.childIndexes.size(); x++) {
-            int childIndex = pixel.childIndexes.get(x);
-            childIndexes.add(childIndex);
-          }
-          pixel.withChild = false;
-          pixel.childIndexes = new ArrayList<Integer>();
-          childIndexes.add(i);
-          withChild = true;
-        }
+        makeAsChild(pixel, i);
       }
+    }
+  }
+  
+  void makeAsChild(Pixel pixel, int i) {
+    if (((withChild || random(25) <= 1)
+      || (withChild && pixel.withChild))
+        && (red > 0 || blue > 0)
+        && (pixel.red > 0 || pixel.blue > 0)
+        && (green <= 1 && pixel.green <= 1)) {
+      // steals any of new childs connections
+      for (int x=0; x < pixel.childIndexes.size(); x++) {
+        int childIndex = pixel.childIndexes.get(x);
+        childIndexes.add(childIndex);
+      }
+      pixel.withChild = false;
+      pixel.childIndexes = new ArrayList<Integer>();
+      childIndexes.add(i);
+      withChild = true;
     }
   }
   
@@ -148,46 +142,36 @@ class Pixel {
   }
   
   void avoid(Pixel pixel) {
-    float horizontal = abs(loc.x - pixel.loc.x), 
-      vertical = abs(loc.y - pixel.loc.y),
-      diameter = size*2;
-    // stays on screen
-    avoidEdges();
-    // avoids other pixels
-    if (dist(loc.x, loc.y, pixel.loc.x,
-      pixel.loc.y) < diameter) {
-      if (horizontal < diameter) {
-        if (loc.x - pixel.loc.x < diameter) {
-          avoid = "l";
-        } else if (loc.x - pixel.loc.x > diameter) {
-          avoid = "r";
-        }
-      }
-      if (vertical < diameter) {
-        if (loc.y - pixel.loc.y < diameter) {
-          avoid = "u";
-        } else if (loc.y - pixel.loc.y > diameter) {
-          avoid = "d";
-        }
+    float diameter = size*2;
+    // avoids and bounces off edges
+    if (loc.x <= 10 || loc.x > width-10) {
+      xSpeed = -xSpeed;
+      directOctal = 0;
+    } if (loc.y <= 10 || loc.y > height-10) {
+        ySpeed = -ySpeed;
+        directOctal = 0;
+    }
+    // prioritizes edges
+    if (loc.x < width-25 && loc.x > 25 && loc.y < width-25 && loc.y > 25) {
+      // avoids other pixels
+      if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < diameter) {
+        xSpeed = -xSpeed;
+        ySpeed = -ySpeed;
+        directOctal = 0;
       }
     }
   }
   
-  void avoidEdges() {
-    // avoids egdes of screen
-    if (loc.x >= width) {
-      avoid = "l";
-    } else if (loc.x <= 0) {
-      avoid = "r";
-    }
-    if (loc.y >= height) {
-      avoid = "u";
-    } else if (loc.y <= 0) {
-      avoid = "d";
+  void explore() {
+    int centerDist = 50;
+    if (loc.x < width-centerDist && loc.x > centerDist
+      && loc.y < width-centerDist && loc.y > centerDist) {
+      directOctal = int(random(8));
     }
   }
   
   void context() {
+    explore(); // for random movement when not bouncing
     for (int i=0; i < world._pixels.size(); i++) {
       Pixel pixel = world._pixels.get(i);
       if (pixel != this) {
