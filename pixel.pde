@@ -5,6 +5,8 @@ class Pixel {
   float size, speed, red, green, blue;
   ArrayList<String> vocab;
   String avoid, speech;
+  boolean withChild;
+  int childIndex;
   
   Pixel () {
     birth();
@@ -16,6 +18,7 @@ class Pixel {
     dest = new PVector(random(width), random(height));
     colorOrient();
     basicVocab();
+    withChild = false;
     speed = 2;
     size = 1;
   }
@@ -35,6 +38,11 @@ class Pixel {
     fill(_color);
     rectMode(CENTER);
     rect(loc.x, loc.y, size, size);
+    // shows child connection
+    if (withChild) {
+      Pixel child = world._pixels.get(childIndex);
+      line(loc.x, loc.y, child.loc.x, child.loc.y);
+    }
   }
   
   void move() {
@@ -70,12 +78,14 @@ class Pixel {
     }
   }
   
-  void listen(Pixel pixel) {
+  void listen(Pixel pixel, int i) {
     if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*4) {
       if (pixel.speech == "u" || pixel.speech == "d" ||
         pixel.speech == "l" || pixel.speech == "r") {
         pixel._color = color(random(pixel.red),
           random(pixel.green), random(pixel.blue));
+        withChild = true;
+        childIndex = i;
       }
     } 
   }
@@ -125,7 +135,7 @@ class Pixel {
       Pixel pixel = world._pixels.get(i);
       if (pixel != this) {
         avoid(pixel);
-        listen(pixel);
+        listen(pixel, i);
       }
     }
   }
