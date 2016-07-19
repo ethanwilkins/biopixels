@@ -6,7 +6,7 @@ class Pixel {
   ArrayList<String> vocab;
   String avoid, speech;
   boolean withChild;
-  int childIndex;
+  ArrayList<Integer> childIndexes;
   
   Pixel () {
     birth();
@@ -19,7 +19,8 @@ class Pixel {
     colorOrient();
     basicVocab();
     withChild = false;
-    speed = 2;
+    childIndexes = new ArrayList<Integer>();
+    speed = 4;
     size = 1;
   }
   
@@ -40,8 +41,11 @@ class Pixel {
     rect(loc.x, loc.y, size, size);
     // shows child connection
     if (withChild) {
-      Pixel child = world._pixels.get(childIndex);
-      line(loc.x, loc.y, child.loc.x, child.loc.y);
+      for (int i=0; i < childIndexes.size(); i++) {
+        int index = childIndexes.get(i);
+        Pixel child = world._pixels.get(index);
+        stroke(_color); line(loc.x, loc.y, child.loc.x, child.loc.y);
+      }
     }
   }
   
@@ -84,8 +88,8 @@ class Pixel {
         pixel.speech == "l" || pixel.speech == "r") {
         pixel._color = color(random(pixel.red),
           random(pixel.green), random(pixel.blue));
+        childIndexes.add(i);
         withChild = true;
-        childIndex = i;
       }
     } 
   }

@@ -12,6 +12,7 @@ class World {
   void display() {
     if (mousePressed) {
       fill(0);
+      noStroke();
       ellipse(float(mouseX), float(mouseY),
         pressDiameter, pressDiameter);
     }
@@ -19,6 +20,10 @@ class World {
       Pixel pixel = _pixels.get(i);
       pixel.update();
       pixel.display();
+      // erases all bonds
+      if (mousePressed) {
+        pixel.childIndexes = new ArrayList<Integer>();
+      }
     }
   }
   
