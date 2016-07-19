@@ -20,7 +20,7 @@ class Pixel {
     basicVocab();
     withChild = false;
     childIndexes = new ArrayList<Integer>();
-    speed = 4;
+    speed = 2;
     size = 1;
   }
   
@@ -31,10 +31,6 @@ class Pixel {
   }
   
   void display() {
-    if (mousePressed && dist(mouseX, mouseY, loc.x,
-      loc.y) < world.pressDiameter) {
-      _color = color(random(255), random(255), random(255));
-    }
     noStroke();
     fill(_color);
     rectMode(CENTER);
@@ -44,7 +40,9 @@ class Pixel {
       for (int i=0; i < childIndexes.size(); i++) {
         int index = childIndexes.get(i);
         Pixel child = world._pixels.get(index);
-        stroke(_color); line(loc.x, loc.y, child.loc.x, child.loc.y);
+        rectMode(CORNER);
+        stroke(_color); fill(0, 0);
+        rect(loc.x, loc.y, loc.x-child.loc.x, loc.y-child.loc.y);
       }
     }
   }
@@ -83,15 +81,32 @@ class Pixel {
   }
   
   void listen(Pixel pixel, int i) {
+    // changes to rainbow colors when pressed
+    if (mousePressed && dist(mouseX, mouseY, loc.x,
+      loc.y) < world.pressDiameter) {
+      red = random(255);
+      green = random(255);
+      blue = random(255);
+      _color = color(red, green, blue);
+      childIndexes = new ArrayList<Integer>();
+    }
+    // tells other pixel that's bumped into, copies it's color
     if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*4) {
       if (pixel.speech == "u" || pixel.speech == "d" ||
         pixel.speech == "l" || pixel.speech == "r") {
-        pixel._color = color(random(pixel.red),
-          random(pixel.green), random(pixel.blue));
-        childIndexes.add(i);
-        withChild = true;
+        // copies colors one by one
+        red = pixel.red; green = pixel.green; blue = pixel.blue;
+        pixel._color = color(red, green, blue);
+        // determines whether to make as child
+        if ((red > 0 || blue > 0) && (pixel.red > 0
+          || pixel.blue > 0) && (green <= 10 && pixel.green <= 10)) {
+          // erases any of new childs connections
+          pixel.childIndexes = new ArrayList<Integer>();
+          childIndexes.add(i);
+          withChild = true;
+        }
       }
-    } 
+    }
   }
   
   void avoid(Pixel pixel) {
