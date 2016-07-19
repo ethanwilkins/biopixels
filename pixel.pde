@@ -3,11 +3,11 @@ class Pixel {
   int directOctal;
   color _color;
   int desR, desG, desB;
-  float size, speed, xSpeed, ySpeed,
+  float size, speed, diameter, xSpeed, ySpeed,
     red, green, blue;
   ArrayList<String> vocab;
   String avoid, speech;
-  boolean withChild;
+  boolean withChild, outOfBounds;
   ArrayList<Integer> childIndexes;
   
   Pixel () {
@@ -22,7 +22,8 @@ class Pixel {
     withChild = false;
     colorOrient();
     basicVocab();
-    xSpeed = 1;
+    speed = 1;
+    xSpeed = speed;
     ySpeed = xSpeed;
     size = 1;
   }
@@ -52,7 +53,6 @@ class Pixel {
   }
   
   void move() {
-    //int direction = int(random(16));
     switch (directOctal) {
       case 0: // applies bounce
         loc.x += xSpeed;
@@ -86,7 +86,7 @@ class Pixel {
         loc.y -= speed;
         break;
     }
-    avoid = "";
+    //avoid = "";
   }
   
   void speak() {
@@ -142,19 +142,29 @@ class Pixel {
   }
   
   void avoid(Pixel pixel) {
-    float diameter = size*2;
     // avoids and bounces off edges
-    if (loc.x <= 10 || loc.x > width-10) {
-      xSpeed = -xSpeed;
-      directOctal = 0;
-    } if (loc.y <= 10 || loc.y > height-10) {
-        ySpeed = -ySpeed;
+    if (loc.x <= world.safetyZone || loc.x >= width-world.safetyZone) {
+      if (!outOfBounds) {
+        xSpeed = -xSpeed;
         directOctal = 0;
+        outOfBounds = true;
+      }
+    } if (loc.y <= world.safetyZone || loc.y >= height-world.safetyZone) {
+        if (!outOfBounds) {
+          ySpeed = -ySpeed;
+          directOctal = 0;
+          outOfBounds = true;
+        }
     }
     // prioritizes edges
-    if (loc.x < width-25 && loc.x > 25 && loc.y < width-25 && loc.y > 25) {
+    avoidPixels(pixel);
+  }
+  
+  void avoidPixels(Pixel pixel) {
+    if (loc.x <= width-world.safetyZone && loc.x >= world.safetyZone
+      && loc.y <= height-world.safetyZone && loc.y >= world.safetyZone) {
       // avoids other pixels
-      if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < diameter) {
+      if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < diameter*2) {
         xSpeed = -xSpeed;
         ySpeed = -ySpeed;
         directOctal = 0;
@@ -163,10 +173,10 @@ class Pixel {
   }
   
   void explore() {
-    int centerDist = 50;
-    if (loc.x < width-centerDist && loc.x > centerDist
-      && loc.y < width-centerDist && loc.y > centerDist) {
-      directOctal = int(random(8));
+    if (loc.x < width-world.safetyZone && loc.x > world.safetyZone
+      && loc.y < width-world.safetyZone && loc.y > world.safetyZone) {
+      directOctal = int(random(1, 9));
+      outOfBounds = false;
     }
   }
   

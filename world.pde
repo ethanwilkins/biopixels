@@ -2,12 +2,22 @@ class World {
   ArrayList<Pixel> _pixels;
   int population = 750;
   int civilization;
+  int safetyZone;
   
   // for press interaction
   float pressDiameter = 50;
   
   World () {
     genesis();
+  }
+  
+  void genesis() {
+    civilization = 0;
+    safetyZone = 1;
+    _pixels = new ArrayList<Pixel>();
+    for (int i=0; i < population; i++) {
+      _pixels.add(new Pixel());
+    }
   }
   
   void display() {
@@ -48,13 +58,5 @@ class World {
       }
     }
     return civ / _pixels.size();
-  }
-  
-  void genesis() {
-    civilization = 0;
-    _pixels = new ArrayList<Pixel>();
-    for (int i=0; i < population; i++) {
-      _pixels.add(new Pixel());
-    }
   }
 }
