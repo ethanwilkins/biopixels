@@ -46,7 +46,7 @@ class Pixel {
         Pixel child = world._pixels.get(index);
         child._color = _color;
         //rectMode(CORNER);
-        stroke(_color, 15); //fill(0, 0);
+        stroke(_color, 5); //fill(0, 0);
         line(loc.x, loc.y, child.loc.x, child.loc.y);
       }
     }

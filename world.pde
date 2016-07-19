@@ -46,7 +46,7 @@ class World {
           Pixel child = _pixels.get(childIndex);
           toCiv = dist(pixel.loc.x, pixel.loc.y, child.loc.x, child.loc.y);
           // adds if not green, takes if green
-          if (pixel.green < (pixel.red+pixel.green+pixel.blue)*0.5) {
+          if (pixel.green <= (pixel.red+pixel.green+pixel.blue)*0.5) {
             civ += toCiv*2;
           } else {
             civ -= toCiv/2;
