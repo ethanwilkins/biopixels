@@ -4,7 +4,7 @@ class World {
   int civilization;
   
   // for press interaction
-  float pressDiameter = 75;
+  float pressDiameter = 50;
   
   World () {
     genesis();
@@ -14,7 +14,7 @@ class World {
     if (mousePressed) {
       fill(0);
       noStroke();
-      rect(float(mouseX), float(mouseY),
+      ellipse(float(mouseX), float(mouseY),
         pressDiameter, pressDiameter);
     }
     for (int i=0; i < _pixels.size(); i++) {
@@ -32,14 +32,14 @@ class World {
       Pixel pixel = _pixels.get(i);
       if (pixel.withChild) {
         for (int x=0; x < pixel.childIndexes.size(); x++) {
-          Pixel child = _pixels.get(x);
-          toCiv = ((abs(pixel.loc.x-child.loc.x))
-            + (abs(pixel.loc.y-child.loc.y)))/2;
+          int childIndex = pixel.childIndexes.get(x);
+          Pixel child = _pixels.get(childIndex);
+          toCiv = dist(pixel.loc.x, pixel.loc.y, child.loc.x, child.loc.y);
           // adds if not green, takes if green
           if (pixel.green < (pixel.red+pixel.green+pixel.blue)*0.5) {
-            civ += toCiv;
+            civ += toCiv*2;
           } else {
-            civ -= toCiv;
+            civ -= toCiv/2;
           }
         }
       } else if (pixel.red+pixel.blue == 0) {
