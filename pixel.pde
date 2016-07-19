@@ -46,7 +46,7 @@ class Pixel {
         Pixel child = world._pixels.get(index);
         child._color = _color;
         //rectMode(CORNER);
-        stroke(_color); //fill(0, 0);
+        stroke(_color, 15); //fill(0, 0);
         line(loc.x, loc.y, child.loc.x, child.loc.y);
       }
     }
@@ -99,24 +99,22 @@ class Pixel {
     listenForPress();
     // tells other pixel that's bumped into, copies it's color
     if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*4) {
-      if (pixel.speech != "" || pixel.speech != null) {
-        // copies each color, one by one
-        red = pixel.red; green = pixel.green; blue = pixel.blue;
-        if (!pixel.withChild) {
-          pixel._color = color(red, green, blue);
-        }
-        // determines whether to make as child
-        makeAsChild(pixel, i);
+      // copies each color, one by one
+      red = pixel.red; green = pixel.green; blue = pixel.blue;
+      if (!pixel.withChild) {
+        pixel._color = color(red, green, blue);
       }
+      // determines whether to make as child
+      makeAsChild(pixel, i);
     }
   }
   
   void makeAsChild(Pixel pixel, int i) {
-    if (((withChild || random(25) <= 1)
+    if (((withChild || random(25) <= 5)
       || (withChild && pixel.withChild))
         && (red > 0 || blue > 0)
         && (pixel.red > 0 || pixel.blue > 0)
-        && (green <= 1 && pixel.green <= 1)) {
+        && (green <= 1 /*&& pixel.green <= 1*/)) {
       // steals any of new childs connections
       for (int x=0; x < pixel.childIndexes.size(); x++) {
         int childIndex = pixel.childIndexes.get(x);
@@ -155,6 +153,9 @@ class Pixel {
           directOctal = 0;
           outOfBounds = true;
         }
+    }
+    if (outOfBounds) {
+      _color = color(0, 0, 0);
     }
     // prioritizes edges
     avoidPixels(pixel);
