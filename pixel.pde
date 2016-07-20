@@ -157,18 +157,19 @@ class Pixel {
     if (outOfBounds) {
       _color = color(0, 0, 0);
     }
-    // prioritizes edges
     avoidPixels(pixel);
   }
   
   void avoidPixels(Pixel pixel) {
+    // prioritizes edges
     if (loc.x <= width-world.safetyZone && loc.x >= world.safetyZone
       && loc.y <= height-world.safetyZone && loc.y >= world.safetyZone) {
       // avoids other pixels
-      if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < diameter*2) {
-        xSpeed = -xSpeed;
-        ySpeed = -ySpeed;
-        directOctal = 0;
+      if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*2) {
+        int oldDirection = directOctal;
+        do {
+          directOctal = int(random(1, 9));
+        } while (oldDirection == directOctal);
       }
     }
   }

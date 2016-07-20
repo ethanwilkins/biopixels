@@ -1,6 +1,6 @@
 class World {
   ArrayList<Pixel> _pixels;
-  int population = 750;
+  int population = 1000;
   int civilization;
   int safetyZone;
   
@@ -45,10 +45,15 @@ class World {
           int childIndex = pixel.childIndexes.get(x);
           Pixel child = _pixels.get(childIndex);
           toCiv = dist(pixel.loc.x, pixel.loc.y, child.loc.x, child.loc.y);
-          civ += toCiv+(pixel.red+pixel.blue)-pixel.green;
+          // adds if not green, subtracts otherwise
+          if (pixel.green < (pixel.red+pixel.green+pixel.blue)*0.5) {
+            civ += toCiv;
+          } else {
+            civ -= toCiv;
+          }
         }
       } else if (pixel.red+pixel.blue == 0) {
-        // tame wild pixels bring vitality 
+        // single wild pixels bring vitality 
         civ++;
       }
     }
