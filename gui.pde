@@ -8,7 +8,9 @@ class Gui {
   }
   
   void display() {
-    showCivLevel();
+    if (world.civilization > 0) {
+      showCivLevel();
+    }
   }
   
   void showCivLevel() {
