@@ -7,7 +7,7 @@ class Pixel {
     red, green, blue, colorCR;
   ArrayList<String> vocab;
   String avoid, speech;
-  boolean withChild, outOfBounds, touched,
+  boolean withChild, outOfBounds, touched, targeting=false,
     fatR=false, fatG=false, fatB=false;
   ArrayList<Integer> childIndexes;
   
@@ -125,10 +125,12 @@ class Pixel {
         int childIndex = pixel.childIndexes.get(x);
         childIndexes.add(childIndex);
       }
-      pixel.withChild = false;
       pixel.childIndexes = new ArrayList<Integer>();
       childIndexes.add(i);
       withChild = true;
+      targeting = false;
+      pixel.withChild = false;
+      pixel.targeting = false;
     }
   }
   
@@ -141,6 +143,7 @@ class Pixel {
       blue = random(255);
       _color = color(red, green, blue);
       childIndexes = new ArrayList<Integer>();
+      withChild = false;
       touched = true;
     }
   }
@@ -180,6 +183,63 @@ class Pixel {
     }
   }
   
+  void findOtherParents(Pixel pixel) {
+    if (withChild && childIndexes.size() < pixel.childIndexes.size()
+      && (!targeting || dist(loc.x, loc.y, dest.x, dest.y)
+      > dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y))) {
+      dest = pixel.loc;
+      targeting = true;
+    }
+    if (targeting) {
+      getToDest();
+    }
+  }
+  
+  void getToDest() {
+    float bestPath = abs(dest.x - loc.x) + abs(dest.y - loc.y);
+    float right = abs(dest.x - (loc.x + 1)) + abs(dest.y - loc.y);
+    float downRight = abs(dest.x - (loc.x + 1)) + abs(dest.y - (loc.y + 1));
+    float down = abs(dest.x - loc.x) + abs(dest.y - (loc.y + 1));
+    float downLeft = abs(dest.x - (loc.x - 1)) + abs(dest.y - (loc.y + 1));
+    float left = abs(dest.x - (loc.x - 1)) + abs(dest.y - loc.y);
+    float topLeft = abs(dest.x - (loc.x - 1)) + abs(dest.y - (loc.y - 1));
+    float up = abs(dest.x - loc.x) + abs(dest.y - (loc.y - 1));
+    float topRight = abs(dest.y - (loc.x + 1)) + abs(dest.y - (loc.y - 1));
+    // 1 go right
+    if (right < bestPath) {
+      bestPath = right;
+      directOctal = 1;
+    } // 2 go down right
+    if (downRight < bestPath) {
+      bestPath = downRight;
+      directOctal = 2;
+    } // 3 go down
+    if (down < bestPath) {
+      bestPath = down;
+      directOctal = 3;
+    } // 4 go down left
+    if (downLeft < bestPath) {
+      bestPath = downLeft;
+      directOctal = 4;
+    } // 5 go left
+    if (left < bestPath) {
+      bestPath = left;
+      directOctal = 5;
+    } // 6 go top left
+    if (topLeft < bestPath) {
+      bestPath = topLeft;
+      directOctal = 6;
+    } // 7 go up
+    if (up < bestPath) {
+      bestPath = up;
+      directOctal = 7;
+    } // 8 go top right
+    if (topRight < bestPath) {
+      bestPath = topRight;
+      directOctal = 8;
+    }
+  }
+  
   void explore() {
     if (loc.x < width-world.safetyZone && loc.x > world.safetyZone
       && loc.y < width-world.safetyZone && loc.y > world.safetyZone) {
@@ -193,6 +253,7 @@ class Pixel {
     for (int i=0; i < world._pixels.size(); i++) {
       Pixel pixel = world._pixels.get(i);
       if (pixel != this) {
+        findOtherParents(pixel);
         avoid(pixel);
         listen(pixel, i);
       }

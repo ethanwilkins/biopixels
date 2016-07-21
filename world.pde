@@ -1,6 +1,6 @@
 class World {
   ArrayList<Pixel> _pixels;
-  int population = 1000;
+  int population = 750;
   int civilization;
   int safetyZone;
   
