@@ -42,7 +42,7 @@ class Pixel {
     rect(loc.x, loc.y, size, size);
     // shows child connection
     if (withChild) {
-      _color = colorMorph();
+      //_color = colorMorph();
       for (int i=0; i < childIndexes.size(); i++) {
         int index = childIndexes.get(i);
         Pixel child = world._pixels.get(index);
@@ -120,12 +120,15 @@ class Pixel {
         && (red > 0 || blue > 0)
         && (pixel.red > 0 || pixel.blue > 0)
         && (green <= 1 && pixel.green <= 1)) {
-      // steals any of new childs connections
-      for (int x=0; x < pixel.childIndexes.size(); x++) {
-        int childIndex = pixel.childIndexes.get(x);
-        childIndexes.add(childIndex);
+      // revolution: small group takes over larger group
+      if (childIndexes.size() < pixel.childIndexes.size()) {
+        // steals any of new childs connections
+        for (int x=0; x < pixel.childIndexes.size(); x++) {
+          int childIndex = pixel.childIndexes.get(x);
+          childIndexes.add(childIndex);
+        }
+        pixel.childIndexes = new ArrayList<Integer>();
       }
-      pixel.childIndexes = new ArrayList<Integer>();
       childIndexes.add(i);
       withChild = true;
       targeting = false;
@@ -143,7 +146,7 @@ class Pixel {
       blue = random(255);
       _color = color(red, green, blue);
       childIndexes = new ArrayList<Integer>();
-      withChild = false;
+      withChild = targeting = false;
       touched = true;
     }
   }
@@ -184,9 +187,12 @@ class Pixel {
   }
   
   void findOtherParents(Pixel pixel) {
-    if (withChild && childIndexes.size() < pixel.childIndexes.size()
+    if (withChild && pixel.withChild
       && (!targeting || dist(loc.x, loc.y, dest.x, dest.y)
-      > dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y))) {
+      > dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y)
+      || (childIndexes.size() >= pixel.childIndexes.size()
+      // makes going after competitor less likely
+      && random(pixel.childIndexes.size()) >= 1))) {
       dest = pixel.loc;
       targeting = true;
     }
