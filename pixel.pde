@@ -199,6 +199,13 @@ class Pixel {
     }
   }
   
+  void basicVocab() {
+    String[] basic = {"r", "g", "b", "u", "d", "l", "r"};
+    for (int i=0; i < basic.length; i++) {
+      vocab.add(basic[i]);
+    }
+  }
+  
   void colorOrient() {
     red = 0; //random(255);
     green = random(255);
@@ -209,13 +216,6 @@ class Pixel {
     desG = int(random(255));
     desB = int(random(255));
     colorCR = random(5, 10);
-  }
-  
-  void basicVocab() {
-    String[] basic = {"r", "g", "b", "u", "d", "l", "r"};
-    for (int i=0; i < basic.length; i++) {
-      vocab.add(basic[i]);
-    }
   }
   
   color colorMorph() {

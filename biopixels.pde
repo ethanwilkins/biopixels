@@ -3,14 +3,17 @@
 
 // ability to press on screen and change all pixels to rainbow in press spot
 
+Gui gui;
 World world;
 
 void setup() {
   size(500, 500);
   background(0);
+  gui = new Gui();
   world = new World();
 }
 
 void draw() {
   world.display();
+  gui.display();
 }
