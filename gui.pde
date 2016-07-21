@@ -17,7 +17,7 @@ class Gui {
     colorCR = world.civilization;
     colorMorph();
     fill(_color); textSize(25);
-    text(world.civilization, width-45, 35);
+    text(world.civilization, width-50, 35);
   }
   
   void colorOrient() {

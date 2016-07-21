@@ -115,7 +115,8 @@ class Pixel {
   
   void makeAsChild(Pixel pixel, int i) {
     int chanceOfChild = 5;
-    if (((withChild || random(chanceOfChild) <= 1)
+    if (!outOfBounds && !pixel.outOfBounds
+      && ((withChild || random(chanceOfChild) <= 1)
       || (withChild && pixel.withChild))
         && (red > 0 || blue > 0)
         && (pixel.red > 0 || pixel.blue > 0)
@@ -187,12 +188,12 @@ class Pixel {
   }
   
   void findOtherParents(Pixel pixel) {
-    if (withChild && pixel.withChild
+    if (!outOfBounds && !pixel.outOfBounds && withChild && pixel.withChild
       && (!targeting || dist(loc.x, loc.y, dest.x, dest.y)
       > dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y)
-      || (childIndexes.size() >= pixel.childIndexes.size()
+      || (childIndexes.size() <= pixel.childIndexes.size()
       // makes going after competitor less likely
-      && random(pixel.childIndexes.size()) >= 1))) {
+      && random(pixel.childIndexes.size()) <= 1))) {
       dest = pixel.loc;
       targeting = true;
     }
@@ -254,7 +255,14 @@ class Pixel {
     }
   }
   
+  void collapse() {
+    if (world.civilization >= 200) {
+      childIndexes = new ArrayList<Integer>();
+    }
+  }
+  
   void context() {
+    collapse(); // civilization collapses
     explore(); // for random movement when not bouncing
     for (int i=0; i < world._pixels.size(); i++) {
       Pixel pixel = world._pixels.get(i);
@@ -310,5 +318,11 @@ class Pixel {
         blue -= colorCR;
     } else blue += colorCR;
     return color(red, green, blue);
+  }
+  
+  float colorComp(Pixel other) {
+    return (abs(red - other.red) +
+    abs(green - other.green) +
+    abs(blue - other.blue))/3;
   }
 }
