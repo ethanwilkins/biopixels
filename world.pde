@@ -36,7 +36,7 @@ class World {
   }
   
   int checkCiv() {
-    int civ = 0;
+    int civ = 0, singleWildPixels = 0;
     float toCiv;
     for (int i=0; i < _pixels.size(); i++) {
       Pixel pixel = _pixels.get(i);
@@ -46,17 +46,25 @@ class World {
           Pixel child = _pixels.get(childIndex);
           toCiv = dist(pixel.loc.x, pixel.loc.y, child.loc.x, child.loc.y);
           // adds if not green, subtracts otherwise
-          if (pixel.green < (pixel.red+pixel.green+pixel.blue)*0.5) {
+          if (pixel.green < (pixel.red+pixel.green+pixel.blue)*0.75) {
             civ += toCiv;
           } else {
             civ -= toCiv;
           }
         }
-      } else if (pixel.red+pixel.blue == 0) {
-        // single wild pixels bring vitality 
-        civ++;
+      } else if (pixel.red+pixel.blue == 0) { 
+        singleWildPixels++;
       }
     }
-    return civ / _pixels.size();
+    // single wild pixels bring vitality
+    civ = civ + singleWildPixels;
+    // never starts at 1
+    civ = (civ / _pixels.size()) - 1;
+    // no negatives
+    if (civ < 0) {
+      civ = 0;
+    }
+    civilization = civ;
+    return civilization;
   }
 }

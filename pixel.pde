@@ -4,10 +4,11 @@ class Pixel {
   color _color;
   int desR, desG, desB;
   float size, speed, diameter, xSpeed, ySpeed,
-    red, green, blue;
+    red, green, blue, colorCR;
   ArrayList<String> vocab;
   String avoid, speech;
-  boolean withChild, outOfBounds;
+  boolean withChild, outOfBounds, touched,
+    fatR=false, fatG=false, fatB=false;
   ArrayList<Integer> childIndexes;
   
   Pixel () {
@@ -41,6 +42,7 @@ class Pixel {
     rect(loc.x, loc.y, size, size);
     // shows child connection
     if (withChild) {
+      _color = colorMorph();
       for (int i=0; i < childIndexes.size(); i++) {
         int index = childIndexes.get(i);
         Pixel child = world._pixels.get(index);
@@ -49,6 +51,8 @@ class Pixel {
         stroke(_color, 5); //fill(0, 0);
         line(loc.x, loc.y, child.loc.x, child.loc.y);
       }
+    } else if (touched) {
+      _color = colorMorph();
     }
   }
   
@@ -110,7 +114,8 @@ class Pixel {
   }
   
   void makeAsChild(Pixel pixel, int i) {
-    if (((withChild || random(5) <= 1)
+    int chanceOfChild = 5;
+    if (((withChild || random(chanceOfChild) <= 1)
       || (withChild && pixel.withChild))
         && (red > 0 || blue > 0)
         && (pixel.red > 0 || pixel.blue > 0)
@@ -132,10 +137,11 @@ class Pixel {
     if (mousePressed && dist(mouseX, mouseY, loc.x,
       loc.y) < world.pressDiameter) {
       red = random(255);
-      green = random(25);
+      green = random(15);
       blue = random(255);
       _color = color(red, green, blue);
       childIndexes = new ArrayList<Integer>();
+      touched = true;
     }
   }
   
@@ -202,6 +208,7 @@ class Pixel {
     desR = int(random(255));
     desG = int(random(255));
     desB = int(random(255));
+    colorCR = random(5, 10);
   }
   
   void basicVocab() {
@@ -209,5 +216,32 @@ class Pixel {
     for (int i=0; i < basic.length; i++) {
       vocab.add(basic[i]);
     }
+  }
+  
+  color colorMorph() {
+    if (red <= colorCR) {
+      fatR = false;
+    } else if (red >= 255-colorCR) {
+        fatR = true;
+    } if (fatR) {
+        red -= colorCR;
+    } else red += colorCR;
+    // Green
+    //if (green < 100) {
+    //  fatG = false;
+    //} else if (green > 200) {
+    //    fatG = true;
+    //} if (fatG) {
+    //    green -= colorCR;
+    //} else green += colorCR;
+    // Blue
+    if (blue <= colorCR) {
+      fatB = false;
+    } else if (blue >= 255-colorCR) {
+        fatB = true;
+    } if (fatB) {
+        blue -= colorCR;
+    } else blue += colorCR;
+    return color(red, green, blue);
   }
 }
