@@ -239,7 +239,7 @@ class Pixel {
     if (loc.x < width-world.safetyZone && loc.x > world.safetyZone
       && loc.y < height-world.safetyZone && loc.y > world.safetyZone) {
       if ((red+blue > 0 && (lastDirChange == 0
-        || millis() >= lastDirChange+100)) || red+blue == 0) {
+        || millis() >= lastDirChange+250)) || red+blue == 0) {
         directOctal = int(random(1, 9));
         if (red+blue > 0) {
           lastDirChange = millis();

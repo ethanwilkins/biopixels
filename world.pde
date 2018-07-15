@@ -5,7 +5,7 @@ class World {
   int safetyZone;
   
   // for press interaction
-  float pressDiameter = 50;
+  float pressDiameter = 75;
   
   World () {
     genesis();
