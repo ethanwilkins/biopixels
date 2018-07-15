@@ -1,11 +1,11 @@
 class World {
   ArrayList<Pixel> _pixels;
-  int population = width;
+  int population = 250;
   int civilization;
   int safetyZone;
   
   // for press interaction
-  float pressDiameter = 50;
+  float pressDiameter = 75;
   
   World () {
     genesis();

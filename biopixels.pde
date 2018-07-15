@@ -7,7 +7,8 @@ Gui gui;
 World world;
 
 void setup() {
-  size(500, 500);
+  size(displayWidth, displayHeight);
+  orientation(PORTRAIT);
   background(0);
   gui = new Gui();
   world = new World();

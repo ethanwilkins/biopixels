@@ -26,7 +26,7 @@ class Pixel {
     speed = 1;
     xSpeed = speed;
     ySpeed = xSpeed;
-    size = 1;
+    size = 1.25;
   }
   
   void update() {
@@ -249,7 +249,7 @@ class Pixel {
   
   void explore() {
     if (loc.x < width-world.safetyZone && loc.x > world.safetyZone
-      && loc.y < width-world.safetyZone && loc.y > world.safetyZone) {
+      && loc.y < height-world.safetyZone && loc.y > world.safetyZone) {
       directOctal = int(random(1, 9));
       outOfBounds = false;
     }
