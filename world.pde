@@ -5,7 +5,7 @@ class World {
   int safetyZone;
   
   // for press interaction
-  float pressDiameter = 75;
+  float pressDiameter = 50;
   
   World () {
     genesis();
@@ -46,7 +46,7 @@ class World {
           Pixel child = _pixels.get(childIndex);
           toCiv = dist(pixel.loc.x, pixel.loc.y, child.loc.x, child.loc.y);
           // adds if not green, subtracts otherwise
-          if (pixel.green < (pixel.red+pixel.green+pixel.blue)*0.75) {
+          if (pixel.red+pixel.blue > 0 && pixel.green == 0) {
             civ += toCiv;
           } else {
             civ -= toCiv;

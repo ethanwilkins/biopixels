@@ -1,13 +1,13 @@
 class Pixel {
   PVector loc, dest;
-  int directOctal;
+  int directOctal, lastDirChange=0;
   color _color;
   int desR, desG, desB;
   float size, speed, diameter, xSpeed, ySpeed,
     red, green, blue, colorCR;
   ArrayList<String> vocab;
   String avoid, speech;
-  boolean withChild, outOfBounds, touched, targeting=false,
+  boolean withChild, touched, outOfBounds=false, targeting=false,
     fatR=false, fatG=false, fatB=false;
   ArrayList<Integer> childIndexes;
   
@@ -26,7 +26,7 @@ class Pixel {
     speed = 1;
     xSpeed = speed;
     ySpeed = xSpeed;
-    size = 1.25;
+    size = 1;
   }
   
   void update() {
@@ -42,7 +42,7 @@ class Pixel {
     rect(loc.x, loc.y, size, size);
     // shows child connection
     if (withChild) {
-      //_color = colorMorph();
+      _color = colorMorph();
       for (int i=0; i < childIndexes.size(); i++) {
         int index = childIndexes.get(i);
         Pixel child = world._pixels.get(index);
@@ -51,8 +51,6 @@ class Pixel {
         stroke(_color, 5); //fill(0, 0);
         line(loc.x, loc.y, child.loc.x, child.loc.y);
       }
-    } else if (touched) {
-      _color = colorMorph();
     }
   }
   
@@ -102,25 +100,21 @@ class Pixel {
   void listen(Pixel pixel, int i) {
     listenForPress();
     // tells other pixel that's bumped into, copies it's color
-    if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*4) {
-      // copies each color, one by one
-      red = pixel.red; green = pixel.green; blue = pixel.blue;
-      if (!pixel.withChild) {
-        pixel._color = color(red, green, blue);
-      }
+    if (abs(red-blue)-green >= abs(pixel.red-pixel.blue)-pixel.green &&
+      dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*4) {
+      pixel._color = color(red, green, blue);
       // determines whether to make as child
       makeAsChild(pixel, i);
     }
   }
   
   void makeAsChild(Pixel pixel, int i) {
-    int chanceOfChild = 5;
-    if (!outOfBounds && !pixel.outOfBounds
-      && ((withChild || random(chanceOfChild) <= 1)
+    int chanceOfChild = 3;
+    if (((withChild || random(chanceOfChild) <= 1)
       || (withChild && pixel.withChild))
         && (red > 0 || blue > 0)
         && (pixel.red > 0 || pixel.blue > 0)
-        && (green <= 1 && pixel.green <= 1)) {
+        && green+pixel.green == 0) {
       // revolution: small group takes over larger group
       if (childIndexes.size() < pixel.childIndexes.size()) {
         // steals any of new childs connections
@@ -143,7 +137,7 @@ class Pixel {
     if (mousePressed && dist(mouseX, mouseY, loc.x,
       loc.y) < world.pressDiameter) {
       red = random(255);
-      green = random(15);
+      green = 0; // only civil pixels
       blue = random(255);
       _color = color(red, green, blue);
       childIndexes = new ArrayList<Integer>();
@@ -153,30 +147,24 @@ class Pixel {
   }
   
   void avoid(Pixel pixel) {
-    // avoids and bounces off edges
-    if (loc.x <= world.safetyZone || loc.x >= width-world.safetyZone) {
-      if (!outOfBounds) {
-        xSpeed = -xSpeed;
-        directOctal = 0;
-        outOfBounds = true;
-      }
-    } if (loc.y <= world.safetyZone || loc.y >= height-world.safetyZone) {
-        if (!outOfBounds) {
-          ySpeed = -ySpeed;
-          directOctal = 0;
-          outOfBounds = true;
-        }
-    }
-    if (outOfBounds) {
-      _color = color(0, 0, 0);
-    }
     avoidPixels(pixel);
+    // avoids and bounces off edges
+    if (loc.x < world.safetyZone) {
+      loc.x = width-world.safetyZone;
+    } else if (loc.x > width-world.safetyZone) {
+      loc.x = world.safetyZone;
+    }
+    if (loc.y < world.safetyZone) {
+      loc.y = height-world.safetyZone;
+    } else if (loc.y > height-world.safetyZone) {
+      loc.y = world.safetyZone;
+    }
   }
   
   void avoidPixels(Pixel pixel) {
     // prioritizes edges
-    if (loc.x <= width-world.safetyZone && loc.x >= world.safetyZone
-      && loc.y <= height-world.safetyZone && loc.y >= world.safetyZone) {
+    if (loc.x < width-world.safetyZone && loc.x > world.safetyZone
+      && loc.y < height-world.safetyZone && loc.y > world.safetyZone) {
       // avoids other pixels
       if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*2) {
         int oldDirection = directOctal;
@@ -188,10 +176,10 @@ class Pixel {
   }
   
   void findOtherParents(Pixel pixel) {
-    if (!outOfBounds && !pixel.outOfBounds && withChild && pixel.withChild
+    if (withChild && pixel.withChild
       && (!targeting || dist(loc.x, loc.y, dest.x, dest.y)
       > dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y)
-      || (childIndexes.size() <= pixel.childIndexes.size()
+      || (childIndexes.size() == pixel.childIndexes.size()
       // makes going after competitor less likely
       && random(pixel.childIndexes.size()) <= 1))) {
       dest = pixel.loc;
@@ -250,7 +238,13 @@ class Pixel {
   void explore() {
     if (loc.x < width-world.safetyZone && loc.x > world.safetyZone
       && loc.y < height-world.safetyZone && loc.y > world.safetyZone) {
-      directOctal = int(random(1, 9));
+      if ((red+blue > 0 && (lastDirChange == 0
+        || millis() >= lastDirChange+100)) || red+blue == 0) {
+        directOctal = int(random(1, 9));
+        if (red+blue > 0) {
+          lastDirChange = millis();
+        }
+      }
       outOfBounds = false;
     }
   }
@@ -258,6 +252,8 @@ class Pixel {
   void collapse() {
     if (world.civilization >= 200) {
       childIndexes = new ArrayList<Integer>();
+      withChild = false; targeting = false;
+      _color = color(random(255), 0, random(255));
     }
   }
   
@@ -267,7 +263,7 @@ class Pixel {
     for (int i=0; i < world._pixels.size(); i++) {
       Pixel pixel = world._pixels.get(i);
       if (pixel != this) {
-        findOtherParents(pixel);
+        //findOtherParents(pixel);
         avoid(pixel);
         listen(pixel, i);
       }
@@ -290,7 +286,7 @@ class Pixel {
     desR = int(random(255));
     desG = int(random(255));
     desB = int(random(255));
-    colorCR = random(5, 10);
+    colorCR = 1;
   }
   
   color colorMorph() {
@@ -302,9 +298,9 @@ class Pixel {
         red -= colorCR;
     } else red += colorCR;
     // Green
-    //if (green < 100) {
+    //if (green <= colorCR) {
     //  fatG = false;
-    //} else if (green > 200) {
+    //} else if (green >= 255-colorCR) {
     //    fatG = true;
     //} if (fatG) {
     //    green -= colorCR;
