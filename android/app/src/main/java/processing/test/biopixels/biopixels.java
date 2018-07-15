@@ -1,7 +1,102 @@
+package processing.test.biopixels;
+
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class biopixels extends PApplet {
+
+// language based on rgb values, r g and b used to communicate colors desired
+// u d l r used to communicate directions, evolves based on this
+
+// ability to press on screen and change all pixels to rainbow in press spot
+
+Gui gui;
+World world;
+
+public void setup() {
+  
+  orientation(PORTRAIT);
+  background(0);
+  gui = new Gui();
+  world = new World();
+}
+
+public void draw() {
+  world.display();
+  gui.display();
+}
+class Gui {
+  int _color;
+  float red, green, blue, colorCR;
+  boolean fatR=false, fatG=false, fatB=false;
+  
+  Gui () {
+    colorOrient();
+  }
+  
+  public void display() {
+    if (world.civilization > 0) {
+      showCivLevel();
+    }
+  }
+  
+  public void showCivLevel() {
+    colorCR = world.civilization;
+    colorMorph();
+    fill(_color); textSize(35);
+    text(world.civilization, width-75, 55);
+  }
+  
+  public void colorOrient() {
+    red = random(255);
+    green = random(255);
+    blue = random(255);
+    _color = color(red, green, blue);
+    colorCR = 1;
+  }
+  
+  public void colorMorph() {
+    if (red <= colorCR) {
+      fatR = false;
+    } else if (red >= 255-colorCR) {
+        fatR = true;
+    } if (fatR) {
+        red -= colorCR;
+    } else red += colorCR;
+    // Green
+    if (green < 100) {
+      fatG = false;
+    } else if (green > 200) {
+        fatG = true;
+    } if (fatG) {
+        green -= colorCR;
+    } else green += colorCR;
+    // Blue
+    if (blue <= colorCR) {
+      fatB = false;
+    } else if (blue >= 255-colorCR) {
+        fatB = true;
+    } if (fatB) {
+        blue -= colorCR;
+    } else blue += colorCR;
+    _color = color(red, green, blue);
+  }
+}
 class Pixel {
   PVector loc, dest;
   int directOctal, lastDirChange=0;
-  color _color;
+  int _color;
   int desR, desG, desB;
   float size, speed, diameter, xSpeed, ySpeed,
     red, green, blue, colorCR;
@@ -15,7 +110,7 @@ class Pixel {
     birth();
   }
   
-  void birth() {
+  public void birth() {
     vocab = new ArrayList<String>();
     loc = new PVector(random(width), random(height));
     dest = new PVector(random(width), random(height));
@@ -29,13 +124,13 @@ class Pixel {
     size = 1;
   }
   
-  void update() {
+  public void update() {
     context();
     speak();
     move();
   }
   
-  void display() {
+  public void display() {
     noStroke();
     fill(_color);
     rectMode(CENTER);
@@ -54,7 +149,7 @@ class Pixel {
     }
   }
   
-  void move() {
+  public void move() {
     switch (directOctal) {
       case 0: // applies bounce
         loc.x += xSpeed;
@@ -91,13 +186,13 @@ class Pixel {
     //avoid = "";
   }
   
-  void speak() {
+  public void speak() {
     if (avoid != null) {
       speech = avoid;
     }
   }
   
-  void listen(Pixel pixel, int i) {
+  public void listen(Pixel pixel, int i) {
     listenForPress();
     // tells other pixel that's bumped into, copies it's color
     if (abs(red-blue)-green >= abs(pixel.red-pixel.blue)-pixel.green &&
@@ -108,7 +203,7 @@ class Pixel {
     }
   }
   
-  void makeAsChild(Pixel pixel, int i) {
+  public void makeAsChild(Pixel pixel, int i) {
     int chanceOfChild = 3;
     if (((withChild || random(chanceOfChild) <= 1)
       || (withChild && pixel.withChild))
@@ -132,7 +227,7 @@ class Pixel {
     }
   }
   
-  void listenForPress() {
+  public void listenForPress() {
     // changes to rainbow colors when pressed
     if (mousePressed && dist(mouseX, mouseY, loc.x,
       loc.y) < world.pressDiameter) {
@@ -146,7 +241,7 @@ class Pixel {
     }
   }
   
-  void avoid(Pixel pixel) {
+  public void avoid(Pixel pixel) {
     avoidPixels(pixel);
     // avoids and bounces off edges
     if (loc.x < world.safetyZone) {
@@ -161,7 +256,7 @@ class Pixel {
     }
   }
   
-  void avoidPixels(Pixel pixel) {
+  public void avoidPixels(Pixel pixel) {
     // prioritizes edges
     if (loc.x < width-world.safetyZone && loc.x > world.safetyZone
       && loc.y < height-world.safetyZone && loc.y > world.safetyZone) {
@@ -169,13 +264,13 @@ class Pixel {
       if (dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y) < size*2) {
         int oldDirection = directOctal;
         do {
-          directOctal = int(random(1, 9));
+          directOctal = PApplet.parseInt(random(1, 9));
         } while (oldDirection == directOctal);
       }
     }
   }
   
-  void findOtherParents(Pixel pixel) {
+  public void findOtherParents(Pixel pixel) {
     if (withChild && pixel.withChild
       // if !targeting or this pixel is closer than one already targeted
       && (!targeting || dist(loc.x, loc.y, dest.x, dest.y)
@@ -192,7 +287,7 @@ class Pixel {
     }
   }
   
-  void getToDest() {
+  public void getToDest() {
     float bestPath = abs(dest.x - loc.x) + abs(dest.y - loc.y);
     float right = abs(dest.x - (loc.x + 1)) + abs(dest.y - loc.y);
     float downRight = abs(dest.x - (loc.x + 1)) + abs(dest.y - (loc.y + 1));
@@ -237,12 +332,12 @@ class Pixel {
     }
   }
   
-  void explore() {
+  public void explore() {
     if (loc.x < width-world.safetyZone && loc.x > world.safetyZone
       && loc.y < height-world.safetyZone && loc.y > world.safetyZone) {
       if ((red+blue > 0 && (lastDirChange == 0
         || millis() >= lastDirChange+350)) || red+blue == 0) {
-        directOctal = int(random(1, 9));
+        directOctal = PApplet.parseInt(random(1, 9));
         if (red+blue > 0) {
           lastDirChange = millis();
         }
@@ -251,7 +346,7 @@ class Pixel {
     }
   }
   
-  void collapse() {
+  public void collapse() {
     if (world.civilization >= 200) {
       childIndexes = new ArrayList<Integer>();
       withChild = false; targeting = false;
@@ -259,7 +354,7 @@ class Pixel {
     }
   }
   
-  void context() {
+  public void context() {
     collapse(); // civilization collapses
     explore(); // for random movement when not bouncing
     for (int i=0; i < world._pixels.size(); i++) {
@@ -272,26 +367,26 @@ class Pixel {
     }
   }
   
-  void basicVocab() {
+  public void basicVocab() {
     String[] basic = {"r", "g", "b", "u", "d", "l", "r"};
     for (int i=0; i < basic.length; i++) {
       vocab.add(basic[i]);
     }
   }
   
-  void colorOrient() {
+  public void colorOrient() {
     red = 0; //random(255);
     green = random(255);
     blue = 0; //random(255);
     _color = color(red, green, blue);
     // desired color state
-    desR = int(random(255));
-    desG = int(random(255));
-    desB = int(random(255));
+    desR = PApplet.parseInt(random(255));
+    desG = PApplet.parseInt(random(255));
+    desB = PApplet.parseInt(random(255));
     colorCR = 1;
   }
   
-  color colorMorph() {
+  public int colorMorph() {
     if (red <= colorCR) {
       fatR = false;
     } else if (red >= 255-colorCR) {
@@ -318,9 +413,81 @@ class Pixel {
     return color(red, green, blue);
   }
   
-  float colorComp(Pixel other) {
+  public float colorComp(Pixel other) {
     return (abs(red - other.red) +
     abs(green - other.green) +
     abs(blue - other.blue))/3;
   }
+}
+class World {
+  ArrayList<Pixel> _pixels;
+  int population = 300;
+  int civilization;
+  int safetyZone;
+  
+  // for press interaction
+  float pressDiameter = 75;
+  
+  World () {
+    genesis();
+  }
+  
+  public void genesis() {
+    civilization = 0;
+    safetyZone = 1;
+    _pixels = new ArrayList<Pixel>();
+    for (int i=0; i < population; i++) {
+      _pixels.add(new Pixel());
+    }
+  }
+  
+  public void display() {
+    if (mousePressed) {
+      fill(0);
+      noStroke();
+      ellipse(PApplet.parseFloat(mouseX), PApplet.parseFloat(mouseY),
+        pressDiameter, pressDiameter);
+    }
+    for (int i=0; i < _pixels.size(); i++) {
+      Pixel pixel = _pixels.get(i);
+      pixel.update();
+      pixel.display();
+    }
+    println(checkCiv());
+  }
+  
+  public int checkCiv() {
+    int civ = 0, singleWildPixels = 0;
+    float toCiv;
+    for (int i=0; i < _pixels.size(); i++) {
+      Pixel pixel = _pixels.get(i);
+      if (pixel.withChild) {
+        for (int x=0; x < pixel.childIndexes.size(); x++) {
+          int childIndex = pixel.childIndexes.get(x);
+          Pixel child = _pixels.get(childIndex);
+          toCiv = dist(pixel.loc.x, pixel.loc.y, child.loc.x, child.loc.y);
+          // adds if not green, subtracts otherwise
+          if (pixel.red+pixel.blue > 0 && pixel.green == 0) {
+            civ += toCiv;
+          } else {
+            civ -= toCiv;
+          }
+        }
+      } else if (pixel.red+pixel.blue == 0) { 
+        singleWildPixels++;
+      }
+    }
+    // single wild pixels bring vitality
+    civ = civ + singleWildPixels;
+    // never starts at 1
+    civ = (civ / _pixels.size()) - 1;
+    // no negatives
+    if (civ < 0) {
+      civ = 0;
+    }
+    civilization = civ;
+    return civilization;
+  }
+}
+  public void settings() {  size(displayWidth, displayHeight); }
 }
