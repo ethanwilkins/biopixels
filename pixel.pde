@@ -177,8 +177,10 @@ class Pixel {
   
   void findOtherParents(Pixel pixel) {
     if (withChild && pixel.withChild
+      // if !targeting or this pixel is closer than one already targeted
       && (!targeting || dist(loc.x, loc.y, dest.x, dest.y)
       > dist(loc.x, loc.y, pixel.loc.x, pixel.loc.y)
+      // or if they both have same number of children
       || (childIndexes.size() == pixel.childIndexes.size()
       // makes going after competitor less likely
       && random(pixel.childIndexes.size()) <= 1))) {
