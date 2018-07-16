@@ -47,9 +47,9 @@ class Pixel {
         int index = childIndexes.get(i);
         Pixel child = world._pixels.get(index);
         child._color = _color;
-        //rectMode(CORNER);
-        stroke(_color, 5); //fill(0, 0);
-        line(loc.x, loc.y, child.loc.x, child.loc.y);
+        // changes connection line to white for large networks
+        color line_color = (childIndexes.size() < 5) ? _color : color(255);
+        stroke(line_color, 5); line(loc.x, loc.y, child.loc.x, child.loc.y);
       }
     }
   }
@@ -114,8 +114,9 @@ class Pixel {
       || (withChild && pixel.withChild))
         && (red > 0 || blue > 0)
         && (pixel.red > 0 || pixel.blue > 0)
+        // green/wild pixels are ignored
         && green+pixel.green == 0) {
-      // revolution: small group takes over larger group
+      // small group takes over larger group
       if (childIndexes.size() < pixel.childIndexes.size()) {
         // steals any of new childs connections
         for (int x=0; x < pixel.childIndexes.size(); x++) {
