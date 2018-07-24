@@ -48,7 +48,7 @@ class Pixel {
         Pixel child = world._pixels.get(index);
         child._color = _color;
         // changes connection line to white for large networks
-        color line_color = (childIndexes.size() < 5) ? _color : color(255);
+        color line_color = _color; //(childIndexes.size() > 1) ? _color : color(255);
         stroke(line_color, 5); line(loc.x, loc.y, child.loc.x, child.loc.y);
       }
     }

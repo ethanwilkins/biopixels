@@ -32,7 +32,7 @@ class World {
       pixel.update();
       pixel.display();
     }
-    println(checkCiv());
+    println("Civ: " + checkCiv());
   }
   
   int checkCiv() {
