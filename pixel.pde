@@ -133,6 +133,18 @@ class Pixel {
     }
   }
   
+  // maintains network
+  void maintain() {
+    
+      for (int i=0; i < childIndexes.size(); i++) {
+        int index = childIndexes.get(i);
+        Pixel child = world._pixels.get(index);
+        if (dist(loc.x, loc.y, child.loc.x, child.loc.y) > width) {
+          childIndexes.remove(i);
+        }
+      }
+  }
+  
   void listenForPress() {
     // changes to rainbow colors when pressed
     if (mousePressed && dist(mouseX, mouseY, loc.x,
@@ -253,15 +265,16 @@ class Pixel {
   }
   
   void collapse() {
-    if (world.civilization >= 200) {
-      childIndexes = new ArrayList<Integer>();
-      withChild = false; targeting = false;
-      _color = color(random(255), 0, random(255));
-    }
+    // civilization level checked elsewhere so this can be used by swipe
+    childIndexes = new ArrayList<Integer>();
+    withChild = false; targeting = false;
+    _color = color(random(255), 0, random(255));
   }
   
   void context() {
-    collapse(); // civilization collapses
+    if (world.civilization >= 200) {
+      collapse(); // civilization collapses
+    }
     explore(); // for random movement when not bouncing
     for (int i=0; i < world._pixels.size(); i++) {
       Pixel pixel = world._pixels.get(i);

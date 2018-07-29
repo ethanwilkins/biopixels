@@ -20,6 +20,13 @@ class World {
     }
   }
   
+  void collapse() {
+    for (int i=0; i < _pixels.size(); i++) {
+      Pixel pixel = _pixels.get(i);
+      pixel.collapse();
+    }
+  }
+  
   void display() {
     if (mousePressed) {
       fill(0);

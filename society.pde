@@ -5,6 +5,10 @@
 
 Gui gui;
 World world;
+Engine ei;
+
+boolean paused = false;
+boolean muted = false;
 
 void setup() {
   size(displayWidth, displayHeight);
@@ -12,9 +16,19 @@ void setup() {
   background(0);
   gui = new Gui();
   world = new World();
+  ei = new Engine();
 }
 
 void draw() {
   world.display();
   gui.display();
+}
+
+void mousePressed() {
+  ei.startSwype();
+  // do stuff
+}
+
+void mouseReleased() {
+  ei.swipeDetector();
 }
