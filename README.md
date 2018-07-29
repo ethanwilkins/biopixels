@@ -1,7 +1,7 @@
-Biopixels
+Society - we live in a society
 =========
 
-Organic pixel simulation
+Organic pixel simulation, press to enable pixel civ
 
 Install Processing https://processing.org/download/
 
