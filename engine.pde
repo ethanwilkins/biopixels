@@ -10,6 +10,8 @@ class Engine {
   xDist, yDist,
   pressTime, releaseTime;
   
+  boolean paused = false;
+  
   void startSwype() {
     pressTime = millis();
     pmousex = mouseX;
@@ -19,6 +21,7 @@ class Engine {
   void renew() {
     // do something
     background(0);
+    paused = false;
   }
   
   void swipeDetector() {
