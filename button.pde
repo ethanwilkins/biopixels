@@ -16,30 +16,21 @@ class Button {
   }
   
   void display(String label) {
-    if (!ei.paused) {
-      noFill();
-      stroke(50);
-      strokeWeight(4);
-      textSize(35);
-      rect(x, y, w, h, 15);
-      fill(50);
-      text(label, x, y+15);
+    textAlign(CENTER);
+    noFill();
+    if (overButton()) {
+      stroke(255);
+      strokeWeight(6);
+      textSize(45);
     } else {
-      noFill();
-      if (overButton()) {
-        stroke(255);
-        strokeWeight(6);
-        textSize(45);
-      } else {
-        stroke(gui._color);
-        strokeWeight(4.5);
-        textSize(40);
-      } rect(x, y, w, h, 15);
-      if (overButton()) {
-        fill(255);
-      } else fill(gui._color);
-      text(label, x, y+15);
-    }
+      stroke(gui._color);
+      strokeWeight(4.5);
+      textSize(40);
+    } rect(x, y, w, h, 15);
+    if (overButton()) {
+      fill(255);
+    } else fill(gui._color);
+    text(label, x, y+15);
   }
   
   void pauseButton() {
@@ -59,7 +50,7 @@ class Button {
   }
   
   void checkPause() {
-    if (overPause() && overAtPress) {
+    if (overButton() && overAtPress) {
       ei.paused = true;
     } overAtPress = false;
   }
@@ -68,6 +59,7 @@ class Button {
     float disX = x+20 - mouseX;
     float disY = y - mouseY;
     if (sqrt(sq(disX) + sq(disY)) < 60) {
+      println("1");
       return true;
     } else return false;
   }

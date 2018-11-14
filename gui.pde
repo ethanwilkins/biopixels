@@ -1,23 +1,57 @@
 class Gui {
+  Button pause, resume, reset, exit;
   color _color;
   float red, green, blue, colorCR;
   boolean fatR=false, fatG=false, fatB=false;
   
   Gui () {
     colorOrient();
+    // pause button/menu
+    pause = new Button(60, 50);
+    resume = new Button(width*0.3, height*0.5);
+    reset = new Button(width*0.5, height*0.5);
+    exit = new Button(width*0.7, height*0.5);
   }
   
   void display() {
-    if (world.civilization > 0) {
-      showCivLevel();
+    colorMorph();
+    showCivLevel();
+    pauseScreen();
+    pause.pauseButton();
+  }
+  
+  void pauseScreen() {
+    if (ei.paused) {
+      background(0);
+      text("Number of groups: " + world._pixels.size(),
+        width/2, height*0.3);
+      resume.display("Resume");
+      reset.display("Reset");
+      exit.display("Quit");
+    }
+  }
+  
+  void checkButtons() {
+    if (ei.paused) {
+      if (resume.overButton()) {
+        ei.paused = false;
+        ei.renew();
+      } else if (reset.overButton()) {
+        ei.renew();
+      } else if (exit.overButton()) {
+        exit();
+      }
+    } else {
+      pause.checkPause();
     }
   }
   
   void showCivLevel() {
-    colorCR = world.civilization;
-    colorMorph();
-    fill(_color); textSize(35);
-    text(world.civilization, width-75, 55);
+    if (world.civilization > 0) {
+      colorCR = world.civilization;
+      fill(_color); textSize(35);
+      text(world.civilization, width-75, 55);
+    }
   }
   
   void colorOrient() {

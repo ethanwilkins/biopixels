@@ -7,7 +7,6 @@ Gui gui;
 World world;
 Engine ei;
 
-boolean paused = false;
 boolean muted = false;
 
 void setup() {
@@ -20,15 +19,18 @@ void setup() {
 }
 
 void draw() {
-  world.display();
-  gui.display();
+  ei.update();
+  if (ei.paused) {
+    println("1"); 
+  }
 }
 
 void mousePressed() {
+  gui.pause.pauseAtPress();
   ei.startSwype();
-  // do stuff
 }
 
 void mouseReleased() {
+  gui.checkButtons();
   ei.swipeDetector();
 }

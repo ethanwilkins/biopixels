@@ -12,6 +12,13 @@ class Engine {
   
   boolean paused = false;
   
+  void update() {
+    if (!paused) {
+      world.display(); 
+    }
+    gui.display();
+  }
+  
   void startSwype() {
     pressTime = millis();
     pmousex = mouseX;
