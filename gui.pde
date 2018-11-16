@@ -23,11 +23,11 @@ class Gui {
   void pauseScreen() {
     if (ei.paused) {
       background(0);
-      text("Number of pixels: " + world._pixels.size(),
-        width/2, height*0.2);
       resume.display("Resume");
       reset.display("Reset");
       exit.display("Exit");
+      text("Number of pixels: " + world._pixels.size(),
+        width/2, height*0.2);
     }
   }
   
