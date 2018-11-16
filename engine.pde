@@ -19,16 +19,22 @@ class Engine {
     gui.display();
   }
   
-  void startSwype() {
-    pressTime = millis();
-    pmousex = mouseX;
-    pmousey = mouseY;
-  }
-  
   void renew() {
     // do something
     background(0);
     paused = false;
+  }
+  
+  void bootStrap() {
+    background(0);
+    paused = false;
+    world.genesis();
+  }
+  
+  void startSwype() {
+    pressTime = millis();
+    pmousex = mouseX;
+    pmousey = mouseY;
   }
   
   void swipeDetector() {

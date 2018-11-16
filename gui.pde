@@ -8,9 +8,9 @@ class Gui {
     colorOrient();
     // pause button/menu
     pause = new Button(60, 50);
-    resume = new Button(width*0.3, height*0.5);
-    reset = new Button(width*0.5, height*0.5);
-    exit = new Button(width*0.7, height*0.5);
+    resume = new Button(width*0.5, height*0.4);
+    reset = new Button(width*0.5, height*0.6);
+    exit = new Button(width*0.5, height*0.8);
   }
   
   void display() {
@@ -23,8 +23,8 @@ class Gui {
   void pauseScreen() {
     if (ei.paused) {
       background(0);
-      text("Number of groups: " + world._pixels.size(),
-        width/2, height*0.3);
+      text("Number of pixels: " + world._pixels.size(),
+        width/2, height*0.2);
       resume.display("Resume");
       reset.display("Reset");
       exit.display("Quit");
@@ -34,8 +34,7 @@ class Gui {
   void checkButtons() {
     if (ei.paused) {
       if (resume.overButton()) {
-        ei.paused = false;
-        ei.renew();
+        ei.bootStrap();
       } else if (reset.overButton()) {
         ei.renew();
       } else if (exit.overButton()) {

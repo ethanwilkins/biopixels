@@ -20,9 +20,6 @@ void setup() {
 
 void draw() {
   ei.update();
-  if (ei.paused) {
-    println("1"); 
-  }
 }
 
 void mousePressed() {
