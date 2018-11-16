@@ -7,8 +7,13 @@ class Button {
   float x, y, w, h;
   boolean overAtPress;
   
+  color _color;
+  float red, green, blue, colorCR;
+  boolean fatR=false, fatG=false, fatB=false;
+  
   Button (float xLoc, float yLoc) {
     overAtPress = false;
+    colorOrient();
     x = xLoc;
     y = yLoc;
     w = 200;
@@ -23,20 +28,21 @@ class Button {
       strokeWeight(6);
       textSize(45);
     } else {
-      stroke(gui._color);
+      stroke(_color);
       strokeWeight(4.5);
       textSize(40);
     } rect(x, y, w, h, 15);
     if (overButton()) {
       fill(255);
-    } else fill(gui._color);
+    } else fill(_color);
     text(label, x, y+15);
+    colorMorph();
   }
   
   void pauseButton() {
     if (!ei.paused) {
       noStroke();
-      fill(gui._color);
+      fill(_color);
       rectMode(CENTER);
       rect(x, y, 20, 40);
       rect(x+25, y, 20, 40);
@@ -50,7 +56,7 @@ class Button {
   }
   
   void checkPause() {
-    if (overButton() && overAtPress) {
+    if (overPause() && overAtPress) {
       ei.paused = true;
     } overAtPress = false;
   }
@@ -59,7 +65,6 @@ class Button {
     float disX = x+20 - mouseX;
     float disY = y - mouseY;
     if (sqrt(sq(disX) + sq(disY)) < 60) {
-      println("1");
       return true;
     } else return false;
   }
@@ -70,5 +75,40 @@ class Button {
     if (sqrt(sq(disX) + sq(disY)) < w/2) {
       return true;
     } else return false;
+  }
+  
+  void colorOrient() {
+    red = random(255);
+    green = random(255);
+    blue = random(255);
+    _color = color(red, green, blue);
+    colorCR = 1;
+  }
+  
+  void colorMorph() {
+    if (red <= colorCR) {
+      fatR = false;
+    } else if (red >= 255-colorCR) {
+        fatR = true;
+    } if (fatR) {
+        red -= colorCR;
+    } else red += colorCR;
+    // Green
+    if (green < 100) {
+      fatG = false;
+    } else if (green > 200) {
+        fatG = true;
+    } if (fatG) {
+        green -= colorCR;
+    } else green += colorCR;
+    // Blue
+    if (blue <= colorCR) {
+      fatB = false;
+    } else if (blue >= 255-colorCR) {
+        fatB = true;
+    } if (fatB) {
+        blue -= colorCR;
+    } else blue += colorCR;
+    _color = color(red, green, blue);
   }
 }
