@@ -27,16 +27,16 @@ class Gui {
         width/2, height*0.2);
       resume.display("Resume");
       reset.display("Reset");
-      exit.display("Quit");
+      exit.display("Exit");
     }
   }
   
   void checkButtons() {
     if (ei.paused) {
       if (resume.overButton()) {
-        ei.bootStrap();
-      } else if (reset.overButton()) {
         ei.renew();
+      } else if (reset.overButton()) {
+        ei.bootStrap();
       } else if (exit.overButton()) {
         exit();
       }

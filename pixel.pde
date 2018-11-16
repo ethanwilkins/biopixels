@@ -30,6 +30,7 @@ class Pixel {
   }
   
   void update() {
+    maintain();
     context();
     speak();
     move();
@@ -135,14 +136,14 @@ class Pixel {
   
   // maintains network
   void maintain() {
-    
-      for (int i=0; i < childIndexes.size(); i++) {
-        int index = childIndexes.get(i);
-        Pixel child = world._pixels.get(index);
-        if (dist(loc.x, loc.y, child.loc.x, child.loc.y) > width) {
-          childIndexes.remove(i);
-        }
+    for (int i=0; i < childIndexes.size(); i++) {
+      int index = childIndexes.get(i);
+      Pixel child = world._pixels.get(index);
+      // removes any parent/child connections that are larger than screen width
+      if (dist(loc.x, loc.y, child.loc.x, child.loc.y) >= width - (width * 0.2)) {
+        childIndexes.remove(i);
       }
+    }
   }
   
   void listenForPress() {
