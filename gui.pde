@@ -1,5 +1,5 @@
 class Gui {
-  Button pause, resume, reset, exit;
+  Button start, pause, resume, reset, exit;
   color _color;
   float red, green, blue, colorCR;
   boolean fatR=false, fatG=false, fatB=false;
@@ -8,6 +8,7 @@ class Gui {
     colorOrient();
     // pause button/menu
     pause = new Button(60, 50);
+    start = new Button(width*0.5, height*0.6);
     resume = new Button(width*0.5, height*0.4);
     reset = new Button(width*0.5, height*0.6);
     exit = new Button(width*0.5, height*0.8);
@@ -17,7 +18,18 @@ class Gui {
     colorMorph();
     showCivLevel();
     pauseScreen();
+    introScreen();
     pause.pauseButton();
+  }
+  
+  void introScreen() {
+    if (ei.intro) {
+      background(0);
+      rectMode(CENTER);
+      textSize(100);
+      text("s o c i e t y", width/2, height*0.4);
+      start.display("Start");
+    }
   }
   
   void pauseScreen() {
@@ -39,6 +51,11 @@ class Gui {
         ei.bootStrap();
       } else if (exit.overButton()) {
         exit();
+      }
+    } else if (ei.intro) {
+      if (start.overButton()) {
+        background(0);
+        ei.intro = false;
       }
     } else {
       pause.checkPause();

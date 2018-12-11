@@ -40,7 +40,7 @@ class Button {
   }
   
   void pauseButton() {
-    if (!ei.paused) {
+    if (!(ei.paused || ei.intro)) {
       noStroke();
       fill(_color);
       rectMode(CENTER);

@@ -10,11 +10,11 @@ class Engine {
   xDist, yDist,
   pressTime, releaseTime;
   
-  boolean paused = false;
+  boolean paused = false, intro = true;
   
   void update() {
-    if (!paused) {
-      world.display(); 
+    if (!(paused || intro)) {
+      world.display();
     }
     gui.display();
   }
