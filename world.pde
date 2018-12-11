@@ -28,7 +28,7 @@ class World {
   }
   
   void display() {
-    if (mousePressed) {
+    if (mousePressed && !gui.pause.overPause()) {
       fill(0);
       noStroke();
       ellipse(float(mouseX), float(mouseY),

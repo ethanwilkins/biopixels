@@ -46,6 +46,7 @@ class Button {
       rectMode(CENTER);
       rect(x, y, 20, 40);
       rect(x+25, y, 20, 40);
+      colorMorph();
     }
   }
   

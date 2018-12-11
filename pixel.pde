@@ -149,7 +149,7 @@ class Pixel {
   void listenForPress() {
     // changes to rainbow colors when pressed
     if (mousePressed && dist(mouseX, mouseY, loc.x,
-      loc.y) < world.pressDiameter) {
+      loc.y) < world.pressDiameter && !gui.pause.overPause()) {
       red = random(255);
       green = 0; // only civil pixels
       blue = random(255);
