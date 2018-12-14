@@ -2,7 +2,7 @@ class Gui {
   Button start, pause, resume, reset, exit;
   color _color;
   float red, green, blue, colorCR;
-  boolean fatR=false, fatG=false, fatB=false;
+  boolean fatR=false, fatG=false, fatB=false, pauseExpanding=false;
   
   Gui () {
     colorOrient();
@@ -42,6 +42,12 @@ class Gui {
       exit.display("Exit");
       text("Number of pixels: " + world._pixels.size(),
         width/2, height*0.2);
+    }
+  }
+  
+  void expandPause() {
+    if (ei.paused && pauseExpanding) {
+      //rect();
     }
   }
   

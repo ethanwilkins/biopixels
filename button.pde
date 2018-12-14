@@ -58,6 +58,7 @@ class Button {
   
   void checkPause() {
     if (overPause() && overAtPress) {
+      gui.pauseExpanding = true;
       ei.paused = true;
     } overAtPress = false;
   }
