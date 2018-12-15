@@ -29,7 +29,7 @@ class Gui {
       rectMode(CENTER);
       textSize(100);
       text("s o c i e t y", width/2, height*0.3);
-      textSize(50);
+      textSize(30);
       text("an abstract simulation of life and society", width/2, height*0.5);
       start.display("Start");
     }
