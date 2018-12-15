@@ -8,6 +8,7 @@ class Gui {
     colorOrient();
     // pause button/menu
     pause = new Button(60, 50);
+    pause.w = 40; pause.h = 40;
     start = new Button(width*0.5, height*0.7);
     resume = new Button(width*0.5, height*0.4);
     reset = new Button(width*0.5, height*0.6);
@@ -40,8 +41,7 @@ class Gui {
       resume.display("Resume");
       reset.display("Reset");
       exit.display("Exit");
-      text("Number of pixels: " + world._pixels.size(),
-        width/2, height*0.2);
+      text("Number of pixels: " + world._pixels.size(), width/2, height*0.2);
     }
   }
   

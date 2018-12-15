@@ -9,7 +9,7 @@ class Button {
   
   color _color;
   float red, green, blue, colorCR;
-  boolean fatR=false, fatG=false, fatB=false;
+  boolean fatR=false, fatG=false, fatB=false, fatW=false, fatH=false;
   
   Button (float xLoc, float yLoc) {
     overAtPress = false;
@@ -41,12 +41,13 @@ class Button {
   
   void pauseButton() {
     if (!(ei.paused || ei.intro)) {
-      noStroke();
+      //noStroke();
       fill(_color);
-      rectMode(CENTER);
-      rect(x, y, 20, 40);
-      rect(x+25, y, 20, 40);
+      ellipseMode(CENTER);
+      ellipse(x, y, w, h);
+      //rect(x+25, y, 20, 40);
       colorMorph();
+      sizeMorph();
     }
   }
   
@@ -85,6 +86,24 @@ class Button {
     blue = random(255);
     _color = color(red, green, blue);
     colorCR = 1;
+  }
+  
+  void sizeMorph() {
+    if (w < 1) {
+      fatW = false;
+    } else if (w > 40) {
+        fatW = true;
+    } if (fatW) {
+        w -= 0.5;
+    } else w += 0.5;
+    
+    if (h < 1) {
+      fatH = false;
+    } else if (h > 40) {
+        fatH = true;
+    } if (fatH) {
+        h -= 0.5;
+    } else h += 0.5;
   }
   
   void colorMorph() {
