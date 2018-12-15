@@ -8,7 +8,7 @@ class Button {
   boolean overAtPress;
   
   color _color;
-  float red, green, blue, colorCR;
+  float red, green, blue, colorCR, sizeL=80;
   boolean fatR=false, fatG=false, fatB=false, fatW=false, fatH=false;
   
   Button (float xLoc, float yLoc) {
@@ -89,17 +89,18 @@ class Button {
   }
   
   void sizeMorph() {
+    // width morph
     if (w < 1) {
       fatW = false;
-    } else if (w > 40) {
+    } else if (w > sizeL) {
         fatW = true;
     } if (fatW) {
         w -= 0.5;
     } else w += 0.5;
-    
+    // height morph
     if (h < 1) {
       fatH = false;
-    } else if (h > 40) {
+    } else if (h > sizeL) {
         fatH = true;
     } if (fatH) {
         h -= 0.5;
