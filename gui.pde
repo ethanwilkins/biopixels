@@ -7,7 +7,7 @@ class Gui {
   Gui () {
     colorOrient();
     // pause button/menu
-    pause = new Button(width-60, height-60);
+    pause = new Button(width-75, height-71);
     pause.w = random(80); pause.h = random(80);
     start = new Button(width*0.5, height*0.7);
     resume = new Button(width*0.5, height*0.4);
@@ -30,7 +30,7 @@ class Gui {
       textSize(100);
       text("s o c i e t y", width/2, height*0.3);
       textSize(30);
-      text("an abstract simulation of life and society", width/2, height*0.5);
+      text("a minimalist simulation of life and society", width/2, height*0.5);
       start.display("Start");
     }
   }

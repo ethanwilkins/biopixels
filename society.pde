@@ -10,6 +10,7 @@ Engine ei;
 boolean muted = false;
 
 void setup() {
+  //size(displayWidth, displayHeight);
   size(1000, 1000);
   orientation(PORTRAIT);
   background(0);
