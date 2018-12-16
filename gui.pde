@@ -7,7 +7,7 @@ class Gui {
   Gui () {
     colorOrient();
     // pause button/menu
-    pause = new Button(60, 60);
+    pause = new Button(width-60, height-60);
     pause.w = random(80); pause.h = random(80);
     start = new Button(width*0.5, height*0.7);
     resume = new Button(width*0.5, height*0.4);
