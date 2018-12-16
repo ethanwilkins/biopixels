@@ -17,10 +17,10 @@ class Gui {
   
   void display() {
     colorMorph();
-    showCivLevel();
     pauseScreen();
     introScreen();
     pause.pauseButton();
+    showCivLevel();
   }
   
   void introScreen() {
@@ -74,7 +74,8 @@ class Gui {
     if (world.civilization > 0) {
       colorCR = world.civilization;
       fill(_color); textSize(35);
-      text(world.civilization, width-75, 55);
+      textMode(CENTER);
+      text(world.civilization, width-75, height-55);
     }
   }
   
