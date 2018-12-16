@@ -10,7 +10,7 @@ Engine ei;
 boolean muted = false;
 
 void setup() {
-  size(1000, 1000);
+  size(displayWidth, displayHeight);
   orientation(PORTRAIT);
   background(0);
   gui = new Gui();
