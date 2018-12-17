@@ -80,9 +80,9 @@ class Button {
     } else return false;
   }
   
-  boolean pixelOverPause(Pixel pixel) {
-    float disX = x+20 - pixel.loc.x;
-    float disY = y - pixel.loc.y;
+  boolean pixelOverPause(PVector loc) {
+    float disX = x+20 - loc.x;
+    float disY = y - loc.y;
     if (sqrt(sq(disX) + sq(disY)) < 60) {
       return true;
     } else return false;

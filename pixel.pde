@@ -173,6 +173,11 @@ class Pixel {
     } else if (loc.y > height-world.safetyZone) {
       loc.y = world.safetyZone;
     }
+    // moves pixels to the top left of button
+    if (gui.pause.pixelOverPause(loc)) {
+      loc.x = gui.pause.x - 100;
+      loc.y = gui.pause.y - 100;
+    }
   }
   
   void avoidPixels(Pixel pixel) {
