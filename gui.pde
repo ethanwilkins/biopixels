@@ -41,7 +41,7 @@ class Gui {
       resume.display("Resume");
       reset.display("Reset");
       exit.display("Exit");
-      text("Number of pixels: " + world._pixels.size(), width/2, height*0.2);
+      text("s o c i e t y . level: " + world.civilization, width/2, height*0.2);
     }
   }
   
@@ -71,11 +71,11 @@ class Gui {
   }
   
   void showCivLevel() {
-    if (world.civilization > 0) {
+    if (world.civilization > 0 && !ei.paused) {
       colorCR = world.civilization;
       fill(_color); textSize(35);
       textMode(CENTER);
-      text(world.civilization, width-75, height-55);
+      text(world.civilization, width-75, height-60);
     }
   }
   
